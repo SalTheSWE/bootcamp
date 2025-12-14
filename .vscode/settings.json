@@ -1,0 +1,9 @@
+{
+    "codescene.enableTelemetry": false,
+    "codescene.enableAutoRefactor": false,
+    "codescene.gitignore": false,
+    "codescene.enableReviewCodeLenses": false,
+    "python.analysis.extraPaths": [
+        "./csv-profiler/src"
+    ]
+}
