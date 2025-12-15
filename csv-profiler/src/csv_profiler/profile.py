@@ -1,9 +1,11 @@
 def basic_profile(rows: list[dict[str, str]]) -> dict:
     if not rows:
-        return {"rows": 0,"columns": {},"notes": ["Empty dataset"]}
+        return {"rows": 0, "columns": {}, "notes": ["Empty dataset"]}
+
     columns = list(rows[0].keys())
     missing = {c: 0 for c in columns}
     non_empty = {c: 0 for c in columns}
+
     for row in rows:
         for c in columns:
             v = (row.get(c) or "").strip()
@@ -11,4 +13,11 @@ def basic_profile(rows: list[dict[str, str]]) -> dict:
                 missing[c] += 1
             else:
                 non_empty[c] += 1
-    return {"rows": len(rows),"columns": columns,"notes": list(missing.values())}
+
+    return {
+        "rows": len(rows),
+        "n_cols": len(columns),
+        "columns": columns,
+        "missing": missing,
+        "non_empty": non_empty,
+    }
