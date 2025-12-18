@@ -14,7 +14,7 @@ Generate a profiling report for a CSV file.
     # If you have a src/ folder:
     #   Mac/Linux: export PYTHONPATH=src
     #   Windows:   $env:PYTHONPATH="src"
-    uv run python -m csv_profiler.cli profile data/sample.csv --out-dir outputs
+    uv run python -m csv_profiler.cli .\data\sample.csv
 
 ## Run GUI
     # If you have a src/ folder:
