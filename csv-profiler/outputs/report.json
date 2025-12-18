@@ -30,5 +30,6 @@
       "missing_pct": 25.0,
       "unique": 3
     }
-  ]
+  ],
+  "timing_ms": 1.0174
 }
