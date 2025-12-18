@@ -1,8 +1,25 @@
 from __future__ import annotations
-from datetime import datetime
 import json
 from pathlib import Path
+from datetime import datetime
 
+def render_markdown(report: dict) -> str:
+    lines: list[str] = []
+    lines.append(f"# CSV Profiling Report\n")
+    lines.append(f"Generated: {datetime.now().isoformat(timespec='seconds')}\n")
+    lines.append("## Summary\n")
+    lines.append(f"- Rows: **{report['n_rows']}**")
+    lines.append(f"- Columns: **{report['n_cols']}**\n")
+    lines.append("## Columns\n")
+    lines.append("| name | type | missing | missing_pct | unique |")
+    lines.append("|---|---:|---:|---:|---:|")
+    lines.extend([
+        f"| {c['name']} | {c['type']} | {c['missing']} | {c['missing_pct']:.1f}% | {c['unique']} |"
+        for c in report["columns"]
+    ])
+    lines.append("\n## Notes\n")
+    lines.append("- Missing values are: `''`, `na`, `n/a`, `null`, `none`, `nan` (case-insensitive)")
+    return "\n".join(lines)
 
 def write_json(report: dict, path: str | Path) -> None:
     path = Path(path)
@@ -12,30 +29,22 @@ def write_json(report: dict, path: str | Path) -> None:
 def write_markdown(report: dict, path: str | Path) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-
     rows = report["summary"]["rows"]
-
     lines: list[str] = []
     lines.extend(md_header("data/sample.csv"))
-
     lines.append("## Summary")
     lines.append(f"- Rows: {rows:,}")
     lines.append(f"- Columns: {report['summary']['columns']:,}")
     lines.append("")
-
     lines.append("## Columns (table)")
     lines.extend(md_table_header())
-
     for name, col in report["columns"].items():
         missing_pct = (col["missing"] / rows) if rows else 0.0
         lines.append(md_col_row(name, col["type"], col["missing"], missing_pct, col["unique"]))
-
     lines.append("")
     lines.append("## Column details")
-
     for name, col in report["columns"].items():
         lines.append(f"### `{name}` ({col['type']})")
-
         if col["type"] == "number":
             lines.append(f"- min: {col['min']}")
             lines.append(f"- max: {col['max']}")
@@ -48,9 +57,7 @@ def write_markdown(report: dict, path: str | Path) -> None:
                 lines.append("- top values:")
                 for item in top:
                     lines.append(f"  - `{item['value']}`: {item['count']}")
-
         lines.append("")
-
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 

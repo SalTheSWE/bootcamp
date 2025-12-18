@@ -1,13 +1,21 @@
 # CSV Profiling Report
 
+Generated: 2025-12-18T16:59:29
+
+## Summary
+
 - Rows: **4**
 - Columns: **4**
 
-## Missing Values
+## Columns
 
-| column | missing |
-|---|---:|
-| name | 0 |
-| age | 1 |
-| city | 1 |
-| salary | 1 |
+| name | type | missing | missing_pct | unique |
+|---|---:|---:|---:|---:|
+| name | text | 0 | 0.0% | 4 |
+| age | text | 1 | 25.0% | 3 |
+| city | text | 1 | 25.0% | 3 |
+| salary | text | 1 | 25.0% | 3 |
+
+## Notes
+
+- Missing values are: `''`, `na`, `n/a`, `null`, `none`, `nan` (case-insensitive)

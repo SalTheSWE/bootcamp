@@ -1,0 +1,26 @@
+# CSV Profiler
+
+Generate a profiling report for a CSV file.
+
+## Features
+- CLI: JSON + Markdown report
+- Streamlit GUI: upload CSV + export reports
+
+## Setup
+    uv venv -p 3.11
+    uv pip install -r requirements.txt
+
+## Run CLI
+    # If you have a src/ folder:
+    #   Mac/Linux: export PYTHONPATH=src
+    #   Windows:   $env:PYTHONPATH="src"
+    uv run python -m csv_profiler.cli .\data\sample.csv
+
+## Run GUI
+    # If you have a src/ folder:
+    #   Mac/Linux: export PYTHONPATH=src
+    #   Windows:   $env:PYTHONPATH="src"
+    uv run streamlit run app.py
+
+## Verify
+    #   you should have report.json and report.md in outputs

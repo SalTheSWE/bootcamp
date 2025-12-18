@@ -1,26 +1,31 @@
-def basic_profile(rows: list[dict[str, str]]) -> dict:
-    cols = get_columns(rows)
-    report = {
-        "summary": {
-            "rows": len(rows),
-            "columns": len(cols),
-            "column_names": cols,
-        },
-        "columns": {},
-    }
+def profile_rows(rows: list[dict[str, str]]) -> dict:
+    n_rows, columns = len(rows), list(rows[0].keys())
+    col_profiles = []
+    for col in columns:
+        values = [r.get(col, "") for r in rows]
+        usable = [v for v in values if not is_missing(v)]
+        missing = len(values) - len(usable)
+        inferred = infer_type(values)
+        unique = len(set(usable))
+        profile = {
+            "name": col,
+            "type": inferred,
+            "missing": missing,
+            "missing_pct": 100.0 * missing / n_rows if n_rows else 0.0,
+            "unique": unique,
+        }
+        if inferred == "number":
+            nums = [try_float(v) for v in usable]
+            nums = [x for x in nums if x is not None]
+            if nums:
+                profile.update({"min": min(nums), "max": max(nums), "mean": sum(nums) / len(nums)})
+        col_profiles.append(profile)
+    return {"n_rows": n_rows, "n_cols": len(columns), "columns": col_profiles}
 
-    for col in cols:
-        values = column_values(rows, col)
-        typ = infer_type(values)
 
-        if typ == "number":
-            stats = numeric_stats(values)
-        else:
-            stats = text_stats(values)
 
-        report["columns"][col] = {"type": typ, **stats}
 
-    return report
+
 
 
 def get_columns(rows: list[dict[str, str]]) -> list[str]:
@@ -68,7 +73,7 @@ def numeric_stats(values: list[str])->dict:
     mean = sum(list)/count
     return {"count":count, "missing": missing, "unique": unique, "min": min, "max": max ,"mean": mean }
 
-def text_stats(values: list[str], top_k: int = 5)->dict:
+"""def text_stats(values: list[str], top_k: int = 5)->dict:
     list = []
     for i in values:
         if not is_missing(i):
@@ -80,8 +85,25 @@ def text_stats(values: list[str], top_k: int = 5)->dict:
     counts: dict[str,str] = {}
     for i in list:
         counts[i] = counts.get(i,0)+1
-    """sorted_counts = sorted(counts.items())
+    sorted_counts = sorted(counts.items())
     for i in range (top_k+1):
-        if counts"""
+        if counts
     top =  sorted(counts.items(), key=lambda kv: kv[1], reverse=True)[:top_k]
-    return {"count":count, "missing": missing, "unique": unique, "top" : top}
+    return {"count":count, "missing": missing, "unique": unique, "top" : top}"""
+def text_stats(values: list[str], top_k: int = 5) -> dict:
+    usable = [v for v in values if not is_missing(v)]
+    missing = len(values) - len(usable)
+
+    counts: dict[str, int] = {}
+    for v in usable:
+        counts[v] = counts.get(v, 0) + 1
+
+    top_items = sorted(counts.items(), key=lambda kv: kv[1], reverse=True)[:top_k]
+    top = [{"value": v, "count": c} for v, c in top_items]
+
+    return {
+        "count": len(usable),
+        "missing": missing,
+        "unique": len(counts),
+        "top": top,
+    }
