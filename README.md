@@ -1,4 +1,4 @@
-# CSV Profiler
+# CSV Pro
 
 Generate a profiling report for a CSV file.
 
