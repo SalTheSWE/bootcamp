@@ -31,3 +31,23 @@ The CLI writes:
 The Streamlit app can:
 - preview the report
 - download JSON + Markdown
+
+## Manual Test Plan
+
+1. Setup:
+   - `uv venv -p 3.11`
+   - `uv pip install -r requirements.txt`
+
+2. CLI:
+   - (If you have a `src/` folder: set `PYTHONPATH=src` first)
+   - `uv run python -m csv_profiler.cli profile data/sample.csv --out-dir outputs`
+
+3. Verify:
+   - `outputs/report.json` and `outputs/report.md` exist
+
+4. GUI:
+   - (If you have a `src/` folder: set `PYTHONPATH=src` first)
+   - `uv run streamlit run app.py`
+
+5. Export:
+   - download JSON + Markdown from the UI
